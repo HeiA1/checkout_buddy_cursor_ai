@@ -74,48 +74,52 @@ def suggest_two_dart_finishes(preferred_double, remaining_score):
     return suggestions
 
 def main():
-    score = int(input("Enter your score: "))
-    checkouts = find_checkout(score)
-    if checkouts:
-        print("Possible checkout combinations:")
-        for checkout in checkouts:
-            descriptive_checkout = [score_description(score) for score in checkout]
-            print(", ".join(descriptive_checkout))
-    else:
-        print("No checkout possible in one turn.")
-
-    dart_input = input("Enter the score achieved with the first dart (e.g., 'triple 20', 'double 1', 'single bull'): ")
-    first_dart_score = parse_dart_input(dart_input)
-    remaining_score = score - first_dart_score
-
-    if remaining_score <= 0:
-        print("Checkout completed or score busted.")
-        return
-
-    new_checkouts = recalculate_checkout_with_remaining_darts(remaining_score)
-    if new_checkouts:
-        print("For the remaining score, possible checkouts are:")
-        for checkout in new_checkouts:
-            descriptive_checkout = [score_description(score) for score in checkout]
-            print(", ".join(descriptive_checkout))
-    else:
-        print("No checkout possible with two darts.")
-        preferred_double = int(input("Enter your preferred double to leave (e.g., 16 for Double 16): "))
-        score_to_leave_preferred_double = preferred_double * 2
-        if remaining_score > score_to_leave_preferred_double:
-            print(f"Aim to leave {score_to_leave_preferred_double} for a Double {preferred_double} finish.")
-            two_dart_suggestions = suggest_two_dart_finishes(preferred_double, remaining_score - score_to_leave_preferred_double)
-            if two_dart_suggestions:
-                print("Suggested 2-dart finishes to leave your preferred double:")
-                for suggestion in two_dart_suggestions:
-                    descriptive_suggestion = [score_description(score) for score in suggestion]
-                    print(", ".join(descriptive_suggestion))
-                # End the program after suggesting the final darts checkout path
-                return
-            else:
-                print("No two-dart finish can leave the preferred double. Consider a different strategy.")
+    while True:  # Start of the loop to allow restarting the program
+        score = int(input("Enter your score: "))
+        checkouts = find_checkout(score)
+        if checkouts:
+            print("Possible checkout combinations:")
+            for checkout in checkouts:
+                descriptive_checkout = [score_description(score) for score in checkout]
+                print(", ".join(descriptive_checkout))
         else:
-            print("Not enough score to leave the preferred double. Aim for a lower score or check out directly if possible.")
+            print("No checkout possible in one turn.")
+
+        dart_input = input("Enter the score achieved with the first dart (e.g., 'triple 20', 'double 1', 'single bull'): ")
+        first_dart_score = parse_dart_input(dart_input)
+        remaining_score = score - first_dart_score
+
+        if remaining_score <= 0:
+            print("Checkout completed or score busted.")
+            print("End of the program. Restarting...")
+            continue  # Restart the program by continuing the loop
+
+        new_checkouts = recalculate_checkout_with_remaining_darts(remaining_score)
+        if new_checkouts:
+            print("For the remaining score, possible checkouts are:")
+            for checkout in new_checkouts:
+                descriptive_checkout = [score_description(score) for score in checkout]
+                print(", ".join(descriptive_checkout))
+        else:
+            print("No checkout possible with two darts.")
+            preferred_double = int(input("Enter your preferred double to leave (e.g., 16 for Double 16): "))
+            score_to_leave_preferred_double = preferred_double * 2
+            if remaining_score > score_to_leave_preferred_double:
+                print(f"Aim to leave {score_to_leave_preferred_double} for a Double {preferred_double} finish.")
+                two_dart_suggestions = suggest_two_dart_finishes(preferred_double, remaining_score - score_to_leave_preferred_double)
+                if two_dart_suggestions:
+                    print("Suggested 2-dart finishes to leave your preferred double:")
+                    for suggestion in two_dart_suggestions:
+                        descriptive_suggestion = [score_description(score) for score in suggestion]
+                        print(", ".join(descriptive_suggestion))
+                    print("End of the program. Restarting...")
+                    continue  # Restart the program by continuing the loop
+                else:
+                    print("No two-dart finish can leave the preferred double. Consider a different strategy.")
+            else:
+                print("Not enough score to leave the preferred double. Aim for a lower score or check out directly if possible.")
+            print("End of the program. Restarting...")
+            continue  # Restart the program by continuing the loop
 
 if __name__ == "__main__":
     main()
